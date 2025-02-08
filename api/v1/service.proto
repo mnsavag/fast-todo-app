@@ -1,0 +1,86 @@
+// protoc --proto_path=./api --go_out=./pkg/api/ --go_opt=paths=source_relative  --go-grpc_out ./pkg/api/ --go-grpc_opt=paths=source_relative ./api/*.proto
+// protoc --proto_path=./api --go_out=./pkg/api/ --go_opt=paths=source_relative  --go-grpc_out ./pkg/api --go-grpc_opt=paths=source_relative --grpc-gateway_out ./pkg/api --grpc-gateway_opt paths=source_relative --openapi_out ./api/v1/ --openapi_opt=title="TodoAppService API" ./api/v1/service.proto
+syntax = "proto3";
+package todoapp.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "google/api/field_behavior.proto";
+import "list.proto";
+
+option go_package = "github.com/mnsavag/fast-todo-app.git/pkg/api/v1";
+
+service TodoAppServiceV1 {
+    // List
+    rpc CreateList(CreateListRequest) returns (CreateListResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/todo-app/lists",
+            body: "*"
+        };
+    };
+
+    rpc DeleteList(DeleteListRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            delete: "/api/v1/todo-app/{list_id}"
+        };
+    };
+
+    rpc GetList(GetListRequest) returns (GetListResponse) {
+        option (google.api.http) = {
+            get: "/api/v1/todo-app/lists/{list_id}"
+        };
+    };
+
+    // Item
+    rpc CreateItem(CreateItemRequest) returns (CreateItemResponse) {
+        option (google.api.http) = {
+            post: "/api/v1/todo-app/lists/{list_id}/items",
+            body: "*"
+        };
+    };
+
+    rpc DeleteItem(DeleteItemRequest) returns (google.protobuf.Empty) {
+        option (google.api.http) = {
+            delete: "/api/v1/todo-app/lists/{list_id}/items/{item_id}"
+        };
+    }
+}
+
+
+// List
+message CreateListRequest {
+    string title = 2 [(google.api.field_behavior) = REQUIRED];
+    string description = 3 [(google.api.field_behavior) = REQUIRED];
+}
+
+message CreateListResponse {
+    uint32 list_id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message DeleteListRequest {
+    uint32 list_id = 1;
+}
+
+message GetListRequest {
+    uint32 list_id = 1;
+}
+
+message GetListResponse {
+    List list = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+// Item
+message CreateItemRequest {
+    uint32 list_id = 1 [(google.api.field_behavior) = REQUIRED];
+    string title = 2 [(google.api.field_behavior) = REQUIRED];
+    string description = 3 [(google.api.field_behavior) = REQUIRED];
+}
+
+message CreateItemResponse {
+    uint32 item_id = 1 [(google.api.field_behavior) = REQUIRED];
+}
+
+message DeleteItemRequest {
+    uint32 list_id = 1 [(google.api.field_behavior) = REQUIRED];
+    uint32 item_id = 2 [(google.api.field_behavior) = REQUIRED];
+}

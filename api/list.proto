@@ -1,0 +1,12 @@
+syntax = "proto3";
+package todoapp;
+
+import "google/api/field_behavior.proto";
+
+option go_package = "github.com/mnsavag/fast-todo-app.git/pkg/api";
+
+message List {
+    uint32 id = 1;
+    string title = 2 [(google.api.field_behavior) = REQUIRED];
+    string description = 3 [(google.api.field_behavior) = REQUIRED];
+}
