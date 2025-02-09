@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS lists
     title TEXT NOT NULL,
     description TEXT NOT NULL,
 
-    item_id INTEGER REFERENCES items (id)
+    item_id INTEGER REFERENCES items (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS items
@@ -13,4 +13,3 @@ CREATE TABLE IF NOT EXISTS items
     title TEXT NOT NULL,
     description TEXT NOT NULL
 );
-

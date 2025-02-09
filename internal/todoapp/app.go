@@ -8,6 +8,7 @@ import (
 	"github.com/mnsavag/fast-todo-app.git/internal/todoapp/config"
 	appgrpc "github.com/mnsavag/fast-todo-app.git/internal/todoapp/grpc"
 	apphttp "github.com/mnsavag/fast-todo-app.git/internal/todoapp/http"
+	"github.com/mnsavag/fast-todo-app.git/internal/todoapp/service"
 	"golang.org/x/sync/errgroup"
 
 	"github.com/sirupsen/logrus"
@@ -31,6 +32,8 @@ func NewApp(cfg config.Config, logger *logrus.Logger) *App {
 
 func (a *App) Init(ctx context.Context) error {
 
+	todoAppService := service.NewService(a.logger)
+
 	// http
 	a.httpServer = apphttp.NewServer(a.cfg, a.logger)
 	err := a.httpServer.Register(ctx)
@@ -40,7 +43,7 @@ func (a *App) Init(ctx context.Context) error {
 
 	// grpc
 	a.grpcServer = appgrpc.NewServer(a.cfg, a.logger)
-	apiServer := api.NewServer(a.cfg, a.logger)
+	apiServer := api.NewServer(a.logger, todoAppService)
 	a.grpcServer.RegisterTodoAppServiceV1(apiServer)
 
 	return nil
